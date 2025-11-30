@@ -1,0 +1,57 @@
+<div class="app-container">
+  <div class="glass-card">
+    <header class="app-header">
+      <h1>Currency Exchange</h1>
+      <p>Find exchange rates by country instantly.</p>
+    </header>
+
+    <div class="search-section">
+      <div class="input-group">
+        <input type="text" [(ngModel)]="country" placeholder="Enter country name (e.g., USA, India)"
+          class="search-input" />
+        <button (click)="onSubmit()" [disabled]="isLoading" class="search-button">
+          <span *ngIf="!isLoading">Search</span>
+          <span *ngIf="isLoading" class="loader"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading Section -->
+    <div class="loading-section" *ngIf="isLoading">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">Loading exchange rates...</p>
+    </div>
+
+    <ng-container *ngIf="viewState$ | async as state">
+      <div class="results-section" *ngIf="state.currencyDataList.length > 0 && !state.errorMessage">
+        <div class="result-card" *ngFor="let data of state.currencyDataList">
+          <div class="result-header">
+            <h2>{{ data.country }}</h2>
+            <span class="currency-code">{{ data.code }}</span>
+          </div>
+          <div class="result-body">
+            <div class="info-row">
+              <span class="label">Currency:</span>
+              <span class="value">{{ data.currency }} ({{ data.symbol }})</span>
+            </div>
+            <div class="info-row highlight">
+              <span class="label">USD Rate:</span>
+              <span class="value">{{ data.usdRate }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">As on:</span>
+              <span class="value">{{ data.asOnDate }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="error-section" *ngIf="state.errorMessage">
+        <div class="error-message" tabindex="-1">
+          <div class="error-icon">⚠️</div>
+          <p>{{ state.errorMessage }}</p>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
